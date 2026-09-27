@@ -261,7 +261,7 @@ export default function Dashboard() {
                   <div className="flex items-center gap-2">
                     <Globe2 className="w-4 h-4 text-teal" />
                     <h2 className="font-heading text-sm font-bold text-navy uppercase tracking-wider">
-                      Diaspora vs Local Representation
+                      Attendee Origin Breakdown
                     </h2>
                   </div>
                   <span className="text-[11px] font-medium text-gray">Server-derived region</span>
@@ -557,7 +557,7 @@ export default function Dashboard() {
                           Satisfaction by Heritage Category
                         </h2>
                         <p className="text-xs text-gray italic mt-0.5">
-                          Comparing experience quality across Local (Ghana), Continental Africa, and Diaspora
+                          Comparing experience quality across Local (Ghana), Continental Africa, African Diaspora and International Supporters
                         </p>
                       </div>
                       <span className="self-start sm:self-auto px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-300/60 font-heading shrink-0">
@@ -566,7 +566,7 @@ export default function Dashboard() {
                     </div>
 
                     <div className="space-y-4 pt-1">
-                      {(['diaspora', 'local_ghana', 'continental_africa'] as RegionType[]).map((regType) => {
+                      {(['diaspora', 'international_supporter', 'local_ghana', 'continental_africa'] as RegionType[]).map((regType) => {
                         const item = feedback?.rating_by_region.find((r) => r.region_type === regType);
                         const regInfo = DASHBOARD_REGION_PALETTE[regType];
                         const avg = item?.avg_rating || 0;

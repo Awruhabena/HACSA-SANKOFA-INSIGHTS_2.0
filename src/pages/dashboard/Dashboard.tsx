@@ -307,12 +307,20 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              {/* Region Legend & Breakdown — auto-fit rather than a fixed
-                  column count, so adding a category (as happened when
-                  International Supporters was introduced) never leaves an
-                  orphaned item wrapping into a mostly-empty row, which was
-                  what made this card grow taller than its sibling. */}
-              <div className="grid grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-2 pt-3 border-t border-border/60">
+              {/* Region Legend & Breakdown. auto-fit was tried first and
+                  didn't actually work — it computes how many columns FIT
+                  the available width, and at this card's width that was
+                  still 3, so the 4th item (International Supporters) was
+                  still orphaned alone on a second row. This forces exactly
+                  as many equal columns as there are real regions in the
+                  data, so it always fills one row regardless of screen
+                  width — columns just get narrower, never wrap. */}
+              <div
+                className="grid gap-2 pt-3 border-t border-border/60"
+                style={{
+                  gridTemplateColumns: `repeat(${geography?.regions.length || 3}, minmax(0, 1fr))`,
+                }}
+              >
                 {geography?.regions.map((reg) => (
                   <div
                     key={reg.region_type}
@@ -327,7 +335,7 @@ export default function Dashboard() {
                             BRAND_CHART_COLORS.teal,
                         }}
                       />
-                      <span className="text-[11px] font-bold text-navy truncate">
+                      <span className="text-[11px] font-bold text-navy leading-tight">
                         {REGION_TYPE_LABELS[reg.region_type as RegionType] || reg.region_type}
                       </span>
                     </div>

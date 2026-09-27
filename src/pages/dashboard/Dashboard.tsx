@@ -253,7 +253,7 @@ export default function Dashboard() {
           </div>
 
           {/* Demographic & Geographic Analytics Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
             {/* Region Breakdown Pie Chart */}
             <Card className="flex flex-col justify-between">
               <div>
@@ -307,8 +307,12 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              {/* Region Legend & Breakdown */}
-              <div className="grid grid-cols-3 gap-2 pt-3 border-t border-border/60">
+              {/* Region Legend & Breakdown — auto-fit rather than a fixed
+                  column count, so adding a category (as happened when
+                  International Supporters was introduced) never leaves an
+                  orphaned item wrapping into a mostly-empty row, which was
+                  what made this card grow taller than its sibling. */}
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-2 pt-3 border-t border-border/60">
                 {geography?.regions.map((reg) => (
                   <div
                     key={reg.region_type}

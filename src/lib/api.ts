@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { PUBLIC_BASE_URL } from './publicUrl';
 import type {
   Event,
   StaffProfile,
@@ -426,7 +427,7 @@ export const api = {
         // whatever default Site URL is configured on the project —
         // not necessarily this deployment at all. Passing it explicitly
         // means the invite link always lands back on this same app.
-        origin: window.location.origin,
+        origin: PUBLIC_BASE_URL,
       },
     });
 

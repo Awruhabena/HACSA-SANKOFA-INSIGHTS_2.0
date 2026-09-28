@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { api } from '../../lib/api';
 import { supabase } from '../../lib/supabase';
+import { PUBLIC_BASE_URL } from '../../lib/publicUrl';
+
 import type { Event, EventDeleteImpact } from '../../lib/types';
 import {
   Button,
@@ -157,8 +159,8 @@ export default function EventDetail() {
     year: 'numeric',
   });
 
-  const registerUrl = `${window.location.origin}/register/${event.slug}`;
-  const feedbackUrl = `${window.location.origin}/feedback/${event.slug}`;
+  const registerUrl = `${PUBLIC_BASE_URL}/register/${event.slug}`;
+  const feedbackUrl = `${PUBLIC_BASE_URL}/feedback/${event.slug}`;
 
   const downloadQrPng = (elementId: string, filename: string) => {
     const svg = document.getElementById(elementId) as SVGElement | null;

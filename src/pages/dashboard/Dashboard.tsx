@@ -253,9 +253,9 @@ export default function Dashboard() {
           </div>
 
           {/* Demographic & Geographic Analytics Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Region Breakdown Pie Chart */}
-            <Card className="flex flex-col justify-between">
+            <Card className="flex flex-col justify-between h-full">
               <div>
                 <div className="flex items-center justify-between pb-3 mb-4 border-b border-border/60">
                   <div className="flex items-center gap-2">
@@ -268,9 +268,14 @@ export default function Dashboard() {
                 </div>
 
                 <div className="h-64 w-full">
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer
+                    width="100%"
+                    height="100%"
+                    initialDimension={{ width: 550, height: 256 }}
+                  >
                     <PieChart>
                       <Pie
+                        isAnimationActive={false}
                         data={geography?.regions || []}
                         dataKey="count"
                         nameKey="region_type"
@@ -284,7 +289,7 @@ export default function Dashboard() {
                           <Cell
                             key={entry.region_type}
                             fill={
-                              DASHBOARD_REGION_PALETTE[entry.region_type as RegionType]?.color ||
+                              DASHBOARD_REGION_PALETTE[entry.region_type]?.color ||
                               BRAND_CHART_COLORS.teal
                             }
                           />
@@ -293,7 +298,7 @@ export default function Dashboard() {
                       <Tooltip
                         formatter={(val: any, name: any) => [
                           `${val} attendees`,
-                          REGION_TYPE_LABELS[name as keyof typeof REGION_TYPE_LABELS] || name,
+                          REGION_TYPE_LABELS[name as RegionType] || name,
                         ]}
                         contentStyle={{
                           backgroundColor: '#FFF',
@@ -307,14 +312,7 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              {/* Region Legend & Breakdown. auto-fit was tried first and
-                  didn't actually work — it computes how many columns FIT
-                  the available width, and at this card's width that was
-                  still 3, so the 4th item (International Supporters) was
-                  still orphaned alone on a second row. This forces exactly
-                  as many equal columns as there are real regions in the
-                  data, so it always fills one row regardless of screen
-                  width — columns just get narrower, never wrap. */}
+              {/* Region Legend & Breakdown (Single Row for 3, 4, or more regions) */}
               <div
                 className="grid gap-2 pt-3 border-t border-border/60"
                 style={{
@@ -328,15 +326,15 @@ export default function Dashboard() {
                   >
                     <div className="flex items-center justify-center gap-1.5 mb-1">
                       <span
-                        className="w-2.5 h-2.5 rounded-full"
+                        className="w-2.5 h-2.5 rounded-full shrink-0"
                         style={{
                           backgroundColor:
-                            DASHBOARD_REGION_PALETTE[reg.region_type as RegionType]?.color ||
+                            DASHBOARD_REGION_PALETTE[reg.region_type]?.color ||
                             BRAND_CHART_COLORS.teal,
                         }}
                       />
                       <span className="text-[11px] font-bold text-navy leading-tight">
-                        {REGION_TYPE_LABELS[reg.region_type as RegionType] || reg.region_type}
+                        {REGION_TYPE_LABELS[reg.region_type] || reg.region_type}
                       </span>
                     </div>
                     <p className="font-heading font-bold text-sm text-navy">{reg.percentage}%</p>
@@ -346,48 +344,56 @@ export default function Dashboard() {
               </div>
             </Card>
 
-            {/* Top Countries of Residence */}
-            <Card>
-              <div className="flex items-center justify-between pb-3 mb-4 border-b border-border/60">
-                <div className="flex items-center gap-2">
-                  <Globe2 className="w-4 h-4 text-navy" />
-                  <h2 className="font-heading text-sm font-bold text-navy uppercase tracking-wider">
-                    Top Countries of Origin & Diaspora
-                  </h2>
+            {/* Top Countries of Origin & Diaspora (Height-matched to sibling card) */}
+            <Card className="flex flex-col justify-between h-full">
+              <div>
+                <div className="flex items-center justify-between pb-3 mb-4 border-b border-border/60">
+                  <div className="flex items-center gap-2">
+                    <Globe2 className="w-4 h-4 text-navy" />
+                    <h2 className="font-heading text-sm font-bold text-navy uppercase tracking-wider">
+                      Top Countries of Origin & Diaspora
+                    </h2>
+                  </div>
+                  <span className="text-[11px] font-medium text-gray">Attendee residences</span>
                 </div>
-                <span className="text-[11px] font-medium text-gray">Attendee residences</span>
-              </div>
 
-              <div className="h-72 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                    data={geography?.countries || []}
-                    layout="vertical"
-                    margin={{ top: 5, right: 30, left: 40, bottom: 5 }}
+                {/* 344px matches the 256px Pie Chart + border + 4-tile legend row */}
+                <div className="h-[344px] w-full">
+                  <ResponsiveContainer
+                    width="100%"
+                    height="100%"
+                    initialDimension={{ width: 550, height: 344 }}
                   >
-                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#EAEAEA" />
-                    <XAxis type="number" tick={{ fontSize: 11, fill: '#888' }} />
-                    <YAxis
-                      dataKey="country"
-                      type="category"
-                      tick={{ fontSize: 11, fill: '#1D3A58', fontWeight: 600 }}
-                      width={90}
-                    />
-                    <Tooltip
-                      formatter={(val: any) => [`${val} attendees`, 'Count']}
-                      contentStyle={{
-                        backgroundColor: '#FFF',
-                        borderRadius: '12px',
-                        border: '1px solid #DADADA',
-                      }}
-                    />
-                    <Bar
-                      dataKey="count"
-                      fill={BRAND_CHART_COLORS.teal}
-                      radius={[0, 6, 6, 0]}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
+                    <BarChart
+                      data={geography?.countries || []}
+                      layout="vertical"
+                      margin={{ top: 5, right: 30, left: 40, bottom: 5 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#EAEAEA" />
+                      <XAxis type="number" tick={{ fontSize: 11, fill: '#888' }} />
+                      <YAxis
+                        dataKey="country"
+                        type="category"
+                        tick={{ fontSize: 11, fill: '#1D3A58', fontWeight: 600 }}
+                        width={90}
+                      />
+                      <Tooltip
+                        formatter={(val: any) => [`${val} attendees`, 'Count']}
+                        contentStyle={{
+                          backgroundColor: '#FFF',
+                          borderRadius: '12px',
+                          border: '1px solid #DADADA',
+                        }}
+                      />
+                      <Bar
+                        isAnimationActive={false}
+                        dataKey="count"
+                        fill={BRAND_CHART_COLORS.teal}
+                        radius={[0, 6, 6, 0]}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             </Card>
           </div>
